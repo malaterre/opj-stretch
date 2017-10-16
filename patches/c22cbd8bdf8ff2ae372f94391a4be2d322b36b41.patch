@@ -22,9 +22,9 @@ index b3eb85816..492911c90 100644
  
  #include "openjpeg.h"
  #include "convert.h"
-@@ -1731,6 +1732,15 @@ opj_image_t* pnmtoimage(const char *filename, opj_cparameters_t *parameters)
-         return NULL;
-     }
+@@ -1573,6 +1574,15 @@
+ 
+     if(!header_info.ok) { fclose(fp); return NULL; }
  
 +    /* This limitation could be removed by making sure to use size_t below */
 +    if (header_info.height != 0 &&
@@ -37,23 +37,23 @@ index b3eb85816..492911c90 100644
 +
      format = header_info.format;
  
-     switch (format) {
+     switch(format)
 diff --git a/src/lib/openjp2/image.c b/src/lib/openjp2/image.c
 index e62b416ca..d00a23701 100644
 --- a/src/lib/openjp2/image.c
 +++ b/src/lib/openjp2/image.c
-@@ -68,7 +68,13 @@ opj_image_t* OPJ_CALLCONV opj_image_create(OPJ_UINT32 numcmpts,
-             comp->prec = cmptparms[compno].prec;
-             comp->bpp = cmptparms[compno].bpp;
-             comp->sgnd = cmptparms[compno].sgnd;
--            comp->data = (OPJ_INT32*) opj_calloc(comp->w * comp->h, sizeof(OPJ_INT32));
-+            if (comp->h != 0 && (OPJ_SIZE_T)comp->w > SIZE_MAX / comp->h) {
-+                // TODO event manager
-+                opj_image_destroy(image);
-+                return NULL;
-+            }
-+            comp->data = (OPJ_INT32*) opj_calloc((OPJ_SIZE_T)comp->w * comp->h,
+@@ -64,7 +64,13 @@
+ 			comp->prec = cmptparms[compno].prec;
+ 			comp->bpp = cmptparms[compno].bpp;
+ 			comp->sgnd = cmptparms[compno].sgnd;
+-			comp->data = (OPJ_INT32*) opj_calloc(comp->w * comp->h, sizeof(OPJ_INT32));
++      if (comp->h != 0 && (OPJ_SIZE_T)comp->w > SIZE_MAX / comp->h) {
++          // TODO event manager
++          opj_image_destroy(image);
++          return NULL;
++      }
++      comp->data = (OPJ_INT32*) opj_calloc((OPJ_SIZE_T)comp->w * comp->h,
 +                                                 sizeof(OPJ_INT32));
-             if (!comp->data) {
-                 /* TODO replace with event manager, breaks API */
-                 /* fprintf(stderr,"Unable to allocate memory for image.\n"); */
+ 			if(!comp->data) {
+ 				/* TODO replace with event manager, breaks API */
+ 				/* fprintf(stderr,"Unable to allocate memory for image.\n"); */

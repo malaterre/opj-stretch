@@ -1,6 +1,7 @@
 openjpeg2 (2.1.2-1.1+deb9u1) stretch-security; urgency=medium
 
-  * 
+  * CVE-2016-9118: c22cbd8bdf8ff2ae372f94391a4be2d322b36b41.patch
+  * CVE-2016-5152: 3fbe71369019df0b47c7a2be4fab8c05768f2f32.patch
 
  -- Mathieu Malaterre <malat@debian.org>  Mon, 16 Oct 2017 11:27:49 +0200
 
