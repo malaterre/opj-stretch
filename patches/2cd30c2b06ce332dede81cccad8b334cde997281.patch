@@ -8,28 +8,26 @@ Subject: [PATCH] tgatoimage(): avoid excessive memory allocation attempt, and
  src/bin/jp2/convert.c | 39 +++++++++++++++++++++++++++------------
  1 file changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/src/bin/jp2/convert.c b/src/bin/jp2/convert.c
-index a4eb81f6a..73dfc8d5f 100644
 --- a/src/bin/jp2/convert.c
 +++ b/src/bin/jp2/convert.c
-@@ -580,13 +580,10 @@ struct tga_header {
+@@ -559,12 +559,10 @@
  };
  #endif /* INFORMATION_ONLY */
  
--static unsigned short get_ushort(const unsigned char *data)
-+/* Returns a ushort from a little-endian serialized value */
-+static unsigned short get_tga_ushort(const unsigned char *data)
- {
+-static unsigned short get_ushort(const unsigned char *data) {
 -    unsigned short val = *(const unsigned short *)data;
 -#ifdef OPJ_BIG_ENDIAN
 -    val = ((val & 0xffU) << 8) | (val >> 8);
 -#endif
 -    return val;
++/* Returns a ushort from a little-endian serialized value */
++static unsigned short get_tga_ushort(const unsigned char *data)
++{
 +    return data[0] | (data[1] << 8);
  }
  
  #define TGA_HEADER_SIZE 18
-@@ -613,17 +610,17 @@ static int tga_readheader(FILE *fp, unsigned int *bits_per_pixel,
+@@ -590,17 +588,17 @@
      id_len = tga[0];
      /*cmap_type = tga[1];*/
      image_type = tga[2];
@@ -53,7 +51,7 @@ index a4eb81f6a..73dfc8d5f 100644
      pixel_depth = tga[16];
      image_desc  = tga[17];
  
-@@ -817,6 +814,24 @@ opj_image_t* tgatoimage(const char *filename, opj_cparameters_t *parameters)
+@@ -764,6 +762,24 @@
          color_space = OPJ_CLRSPC_SRGB;
      }
  
