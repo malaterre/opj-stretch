@@ -10,17 +10,15 @@ This has been recently fixed in a less elegant way per
  src/lib/openjp2/pi.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/src/lib/openjp2/pi.c b/src/lib/openjp2/pi.c
-index c256349b6..df96ac216 100644
 --- a/src/lib/openjp2/pi.c
 +++ b/src/lib/openjp2/pi.c
-@@ -1213,7 +1213,8 @@ static void opj_pi_update_decode_poc(opj_pi_iterator_t * p_pi,
-             l_current_poc->resno1; /* Resolution Level Index #0 (End) */
-         l_current_pi->poc.compno1 =
-             l_current_poc->compno1; /* Component Index #0 (End) */
--        l_current_pi->poc.layno1 = l_current_poc->layno1; /* Layer Index #0 (End) */
+@@ -1019,7 +1019,8 @@
+ 		l_current_pi->poc.precno0 = 0;
+ 		l_current_pi->poc.resno1 = l_current_poc->resno1; /* Resolution Level Index #0 (End) */
+ 		l_current_pi->poc.compno1 = l_current_poc->compno1; /* Component Index #0 (End) */
+-		l_current_pi->poc.layno1 = l_current_poc->layno1; /* Layer Index #0 (End) */
 +        l_current_pi->poc.layno1 = opj_uint_min(l_current_poc->layno1,
 +                                                p_tcp->numlayers); /* Layer Index #0 (End) */
-         l_current_pi->poc.precno1 = p_max_precision;
-         ++l_current_pi;
-         ++l_current_poc;
+ 		l_current_pi->poc.precno1 = p_max_precision;
+ 		++l_current_pi;
+ 		++l_current_poc;
