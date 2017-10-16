@@ -14,34 +14,33 @@ diff --git a/src/lib/openjp2/j2k.c b/src/lib/openjp2/j2k.c
 index 3d90de1ef..3a8f08ea2 100644
 --- a/src/lib/openjp2/j2k.c
 +++ b/src/lib/openjp2/j2k.c
-@@ -8655,6 +8655,9 @@ OPJ_BOOL opj_j2k_read_tile_header(opj_j2k_t * p_j2k,
-     *p_tile_index = p_j2k->m_current_tile_number;
-     *p_go_on = OPJ_TRUE;
-     *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd);
+@@ -8097,6 +8097,9 @@
+         *p_tile_index = p_j2k->m_current_tile_number;
+         *p_go_on = OPJ_TRUE;
+         *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd);
 +    if (*p_data_size == UINT_MAX) {
 +        return OPJ_FALSE;
 +    }
-     *p_tile_x0 = p_j2k->m_tcd->tcd_image->tiles->x0;
-     *p_tile_y0 = p_j2k->m_tcd->tcd_image->tiles->y0;
-     *p_tile_x1 = p_j2k->m_tcd->tcd_image->tiles->x1;
+         *p_tile_x0 = p_j2k->m_tcd->tcd_image->tiles->x0;
+         *p_tile_y0 = p_j2k->m_tcd->tcd_image->tiles->y0;
+         *p_tile_x1 = p_j2k->m_tcd->tcd_image->tiles->x1;
 diff --git a/src/lib/openjp2/tcd.c b/src/lib/openjp2/tcd.c
 index 4d53e8b5e..567798525 100644
 --- a/src/lib/openjp2/tcd.c
 +++ b/src/lib/openjp2/tcd.c
-@@ -1256,6 +1256,7 @@ OPJ_UINT32 opj_tcd_get_decoded_tile_size(opj_tcd_t *p_tcd)
-     opj_tcd_tilecomp_t * l_tile_comp = 00;
-     opj_tcd_resolution_t * l_res = 00;
-     OPJ_UINT32 l_size_comp, l_remaining;
-+    OPJ_UINT32 l_temp;
+@@ -1154,6 +1154,7 @@
+         opj_tcd_tilecomp_t * l_tile_comp = 00;
+         opj_tcd_resolution_t * l_res = 00;
+         OPJ_UINT32 l_size_comp, l_remaining;
++        OPJ_UINT32 l_temp;
  
-     l_tile_comp = p_tcd->tcd_image->tiles->comps;
-     l_img_comp = p_tcd->image->comps;
-@@ -1273,8 +1274,17 @@ OPJ_UINT32 opj_tcd_get_decoded_tile_size(opj_tcd_t *p_tcd)
-         }
+         l_tile_comp = p_tcd->tcd_image->tiles->comps;
+         l_img_comp = p_tcd->image->comps;
+@@ -1171,7 +1172,17 @@
+                 }
  
-         l_res = l_tile_comp->resolutions + l_tile_comp->minimum_num_resolutions - 1;
--        l_data_size += l_size_comp * (OPJ_UINT32)((l_res->x1 - l_res->x0) *
--                       (l_res->y1 - l_res->y0));
+                 l_res = l_tile_comp->resolutions + l_tile_comp->minimum_num_resolutions - 1;
+-                l_data_size += l_size_comp * (OPJ_UINT32)((l_res->x1 - l_res->x0) * (l_res->y1 - l_res->y0));
 +        l_temp = (OPJ_UINT32)((l_res->x1 - l_res->x0) * (l_res->y1 -
 +                              l_res->y0)); /* x1*y1 can't overflow */
 +        if (l_size_comp && UINT_MAX / l_size_comp < l_temp) {
@@ -53,15 +52,15 @@ index 4d53e8b5e..567798525 100644
 +            return UINT_MAX;
 +        }
 +        l_data_size += l_temp;
-         ++l_img_comp;
-         ++l_tile_comp;
-     }
-@@ -1469,7 +1479,7 @@ OPJ_BOOL opj_tcd_update_tile_data(opj_tcd_t *p_tcd,
-     OPJ_UINT32 l_stride, l_width, l_height;
+                 ++l_img_comp;
+                 ++l_tile_comp;
+         }
+@@ -1366,7 +1377,7 @@
+         OPJ_UINT32 l_stride, l_width,l_height;
  
-     l_data_size = opj_tcd_get_decoded_tile_size(p_tcd);
--    if (l_data_size > p_dest_length) {
+         l_data_size = opj_tcd_get_decoded_tile_size(p_tcd);
+-        if (l_data_size > p_dest_length) {
 +    if (l_data_size == UINT_MAX || l_data_size > p_dest_length) {
-         return OPJ_FALSE;
-     }
+                 return OPJ_FALSE;
+         }
  
