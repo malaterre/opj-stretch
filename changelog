@@ -1,3 +1,14 @@
+openjpeg2 (2.1.2-1.1+deb9u2) stretch-security; urgency=medium
+
+  * Fix whitespace/indent mess
+  * CVE-2017-14039: CVE-2017-14039.patch
+  * CVE-2017-14040: 2cd30c2b06ce332dede81cccad8b334cde997281.patch
+  * CVE-2017-14041: e5285319229a5d77bf316bb0d3a6cbd3cb8666d9.patch
+  * CVE-2017-14151: afb308b9ccbe129608c9205cf3bb39bbefad90b9.patch
+  * CVE-2017-14152: dcac91b8c72f743bda7dbfa9032356bc8110098a.patch
+
+ -- Mathieu Malaterre <malat@debian.org>  Mon, 16 Oct 2017 21:15:20 +0200
+
 openjpeg2 (2.1.2-1.1+deb9u1) stretch-security; urgency=medium
 
   * CVE-2016-9118: c22cbd8bdf8ff2ae372f94391a4be2d322b36b41.patch
