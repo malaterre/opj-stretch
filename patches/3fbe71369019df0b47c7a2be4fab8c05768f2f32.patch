@@ -10,11 +10,17 @@ Fix derived from https://pdfium.googlesource.com/pdfium.git/+/d8cc503575463ff3d8
  src/lib/openjp2/tcd.c | 16 +++++++++++++---
  2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/src/lib/openjp2/j2k.c b/src/lib/openjp2/j2k.c
-index 3d90de1ef..3a8f08ea2 100644
 --- a/src/lib/openjp2/j2k.c
 +++ b/src/lib/openjp2/j2k.c
-@@ -8097,6 +8097,9 @@
+@@ -41,6 +41,7 @@
+  */
+ 
+ #include "opj_includes.h"
++#include <limits.h> /* UINT_MAX */
+ 
+ /** @defgroup J2K J2K - JPEG-2000 codestream reader/writer */
+ /*@{*/
+@@ -8097,6 +8098,9 @@
          *p_tile_index = p_j2k->m_current_tile_number;
          *p_go_on = OPJ_TRUE;
          *p_data_size = opj_tcd_get_decoded_tile_size(p_j2k->m_tcd);
@@ -24,11 +30,17 @@ index 3d90de1ef..3a8f08ea2 100644
          *p_tile_x0 = p_j2k->m_tcd->tcd_image->tiles->x0;
          *p_tile_y0 = p_j2k->m_tcd->tcd_image->tiles->y0;
          *p_tile_x1 = p_j2k->m_tcd->tcd_image->tiles->x1;
-diff --git a/src/lib/openjp2/tcd.c b/src/lib/openjp2/tcd.c
-index 4d53e8b5e..567798525 100644
 --- a/src/lib/openjp2/tcd.c
 +++ b/src/lib/openjp2/tcd.c
-@@ -1154,6 +1154,7 @@
+@@ -39,6 +39,7 @@
+  */
+ 
+ #include "opj_includes.h"
++#include <limits.h> /* UINT_MAX */
+ 
+ /* ----------------------------------------------------------------------- */
+ 
+@@ -1154,6 +1155,7 @@
          opj_tcd_tilecomp_t * l_tile_comp = 00;
          opj_tcd_resolution_t * l_res = 00;
          OPJ_UINT32 l_size_comp, l_remaining;
@@ -36,7 +48,7 @@ index 4d53e8b5e..567798525 100644
  
          l_tile_comp = p_tcd->tcd_image->tiles->comps;
          l_img_comp = p_tcd->image->comps;
-@@ -1171,7 +1172,17 @@
+@@ -1171,7 +1173,17 @@
                  }
  
                  l_res = l_tile_comp->resolutions + l_tile_comp->minimum_num_resolutions - 1;
@@ -55,7 +67,7 @@ index 4d53e8b5e..567798525 100644
                  ++l_img_comp;
                  ++l_tile_comp;
          }
-@@ -1366,7 +1377,7 @@
+@@ -1366,7 +1378,7 @@
          OPJ_UINT32 l_stride, l_width,l_height;
  
          l_data_size = opj_tcd_get_decoded_tile_size(p_tcd);
